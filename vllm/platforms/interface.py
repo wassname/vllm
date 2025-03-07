@@ -5,7 +5,7 @@ import platform
 import random
 from platform import uname
 from typing import TYPE_CHECKING, NamedTuple, Optional, Tuple, Union
-
+import os
 import numpy as np
 import torch
 
@@ -299,6 +299,8 @@ class Platform:
     @classmethod
     def is_pin_memory_available(cls) -> bool:
         """Checks whether pin memory is available on the current platform."""
+        if os.environ.get("VLLM_DISABLE_PIN_MEMORY", "0") == "1":
+            return False
         if in_wsl():
             # Pinning memory in WSL is not supported.
             # https://docs.nvidia.com/cuda/wsl-user-guide/index.html#known-limitations-for-linux-cuda-applications
